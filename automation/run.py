@@ -14,8 +14,8 @@ import argparse
 from datetime import datetime
 
 from database import init_db, save_article, get_unposted_articles, mark_posted, log_run
-from scraper import fetch_new_articles
-from ai_rewriter import rewrite_article
+from scraper import fetch_new_topics
+from ai_rewriter import write_article
 from social import post_to_facebook, post_to_x
 from config import MAX_ARTICLES_PER_RUN, SOCIAL_POST_INTERVAL
 
@@ -34,23 +34,23 @@ def run_once() -> dict:
     print(f"{'='*55}")
 
     # ── 1. Scrape RSS feeds ───────────────────────────────
-    raw_articles = fetch_new_articles()
-    stats["articles_found"] = len(raw_articles)
+    topics = fetch_new_topics()
+    stats["articles_found"] = len(topics)
 
-    if not raw_articles:
-        print("[RUN] No new articles found.")
+    if not topics:
+        print("[RUN] No new topics found.")
         log_run(stats)
         return stats
 
     # Limit per run to control API costs
-    raw_articles = raw_articles[:MAX_ARTICLES_PER_RUN]
-    print(f"[RUN] Processing {len(raw_articles)} articles (max {MAX_ARTICLES_PER_RUN}/run)")
+    topics = topics[:MAX_ARTICLES_PER_RUN]
+    print(f"[RUN] Writing {len(topics)} original articles (max {MAX_ARTICLES_PER_RUN}/run)")
 
-    # ── 2. Rewrite with Claude AI ─────────────────────────
+    # ── 2. Write original articles with Claude AI ─────────
     saved_ids = []
-    for i, raw in enumerate(raw_articles, 1):
-        print(f"\n[RUN] Article {i}/{len(raw_articles)}: {raw['title'][:60]}...")
-        article = rewrite_article(raw)
+    for i, topic in enumerate(topics, 1):
+        print(f"\n[RUN] Article {i}/{len(topics)}: {topic['title'][:60]}...")
+        article = write_article(topic)
         if not article:
             errors.append(f"AI failed: {raw['url']}")
             continue
@@ -64,7 +64,7 @@ def run_once() -> dict:
             print(f"  [DB] Duplicate slug, skipped.")
 
         # Small delay between Claude calls
-        if i < len(raw_articles):
+        if i < len(topics):
             time.sleep(2)
 
     # ── 3. Post to social media ───────────────────────────

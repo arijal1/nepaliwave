@@ -1,6 +1,8 @@
 """
-Claude AI rewriter — transforms raw scraped articles into
-NepaliWave-style articles with editorial angle.
+Claude AI article writer.
+Takes only a news headline + brief RSS excerpt as a topic signal.
+Writes a 100% original NepaliWave article from scratch.
+No source text is copied or paraphrased — entirely original journalism.
 """
 import json
 import re
@@ -9,39 +11,42 @@ from config import ANTHROPIC_API_KEY
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-CATEGORY_LIST = ["politics", "business", "sports", "technology", "entertainment", "world", "health"]
+CATEGORY_LIST = ["politics", "business", "sports", "technology",
+                 "entertainment", "world", "health"]
 
-SYSTEM_PROMPT = """You are NepaliWave's editorial AI. NepaliWave is Nepal's independent,
-AI-powered news portal. Your voice is sharp, clear, and trustworthy — like a smart friend
-who actually explains what the news means for ordinary Nepalis.
+SYSTEM_PROMPT = """You are NepaliWave's senior journalist and editorial AI.
 
-Your editorial style:
-- Lead with what actually matters, not the official framing
-- Add the "NepaliWave Angle" — what does this mean for real people on the ground?
-- Be factual but don't be neutral when facts point clearly in one direction
-- Write in accessible English. Not academic, not tabloid.
-- Short punchy paragraphs. No jargon without explanation."""
+NepaliWave is Nepal's independent news portal. Your job is to write original,
+fully independent articles on current Nepali and world news topics.
 
-USER_PROMPT_TEMPLATE = """Source article from {source_name}:
+Your writing style:
+- Original, confident journalism — not a summary of anyone else's work
+- Lead with what actually matters to ordinary Nepalis
+- Add the "NepaliWave Angle": what does this event really mean on the ground?
+- Clear, accessible English — no jargon, no fluff
+- Short punchy paragraphs. Active voice.
+- Draw on your broad knowledge of Nepal — politics, geography, economy, culture, history
+- Every article must be entirely your own original writing"""
 
-TITLE: {title}
+USER_PROMPT_TEMPLATE = """News topic to cover: {title}
 
-CONTENT:
-{content}
+Brief context from {source_name}: {excerpt}
 
----
+Write a complete, original NepaliWave article on this topic.
+Do NOT copy or closely paraphrase the context above — use it only to understand what the news event is.
+Research this topic from your knowledge and write as an independent journalist would.
 
-Rewrite this as a NepaliWave article. Return ONLY valid JSON, no markdown, no extra text:
+Return ONLY valid JSON, no markdown, no extra text:
 
 {{
-  "title": "compelling NepaliWave headline (max 100 chars)",
-  "excerpt": "2-3 sentence summary that hooks the reader (max 200 chars)",
+  "title": "Your original NepaliWave headline (compelling, max 110 chars)",
+  "excerpt": "Your original 2-3 sentence intro that hooks the reader (max 220 chars)",
   "body": [
-    "paragraph 1 — set the scene with the key facts",
-    "paragraph 2 — the NepaliWave angle: what does this really mean?",
-    "paragraph 3 — context, background, or expert perspective",
-    "paragraph 4 — what happens next / what to watch",
-    "paragraph 5 — closing thought"
+    "Paragraph 1 — original scene-setting with key facts",
+    "Paragraph 2 — NepaliWave Angle: what does this really mean for Nepalis?",
+    "Paragraph 3 — background context from your knowledge",
+    "Paragraph 4 — expert perspective or data point",
+    "Paragraph 5 — what to watch next / closing thought"
   ],
   "category": "one of: politics|business|sports|technology|entertainment|world|health",
   "tags": ["tag1", "tag2", "tag3"],
@@ -50,7 +55,6 @@ Rewrite this as a NepaliWave article. Return ONLY valid JSON, no markdown, no ex
 
 
 def slugify(title: str) -> str:
-    """Convert title to URL slug."""
     slug = title.lower()
     slug = re.sub(r"[^\w\s-]", "", slug)
     slug = re.sub(r"[\s_]+", "-", slug)
@@ -58,37 +62,31 @@ def slugify(title: str) -> str:
     return slug[:80]
 
 
-def rewrite_article(raw: dict) -> dict | None:
+def write_article(topic: dict) -> dict | None:
     """
-    Send raw article to Claude and get back a structured NepaliWave article.
-    Returns dict ready to save to DB, or None on failure.
+    Write an original NepaliWave article on a news topic.
+    Input: {title, excerpt, source_name, published_at, url, lang}
+    Output: article dict ready to save to DB, or None on failure.
     """
-    content = raw.get("full_text") or raw.get("summary") or ""
-    if not content:
-        return None
-
     prompt = USER_PROMPT_TEMPLATE.format(
-        source_name=raw["source_name"],
-        title=raw["title"],
-        content=content[:6000],
+        title=topic["title"],
+        source_name=topic["source_name"],
+        excerpt=topic.get("excerpt", "No additional context available.")[:300],
     )
 
     try:
         message = client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=1500,
+            max_tokens=1800,
             system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": prompt}],
         )
         text = message.content[0].text.strip()
-
-        # Strip any accidental markdown fences
         text = re.sub(r"^```(?:json)?\s*", "", text)
         text = re.sub(r"\s*```$", "", text)
 
         data = json.loads(text)
 
-        # Validate category
         if data.get("category") not in CATEGORY_LIST:
             data["category"] = "world"
 
@@ -98,13 +96,13 @@ def rewrite_article(raw: dict) -> dict | None:
             "excerpt":      data.get("excerpt", ""),
             "body":         data.get("body", []),
             "category":     data["category"],
-            "author":       "NepaliWave AI",
-            "published_at": raw["published_at"],
+            "author":       "NepaliWave",
+            "published_at": topic["published_at"],
             "image_url":    "",
             "image_alt":    data["title"],
             "tags":         data.get("tags", []),
-            "source_url":   raw["url"],
-            "source_name":  raw["source_name"],
+            "source_url":   topic["url"],
+            "source_name":  None,      # intentionally not stored on article
             "featured":     0,
             "breaking":     1 if data.get("breaking") else 0,
         }
@@ -113,7 +111,7 @@ def rewrite_article(raw: dict) -> dict | None:
         print(f"  [AI] JSON parse error: {e}")
         return None
     except anthropic.APIError as e:
-        print(f"  [AI] Claude API error: {e}")
+        print(f"  [AI] API error: {e}")
         return None
     except Exception as e:
         print(f"  [AI] Unexpected error: {e}")
