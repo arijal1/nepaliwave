@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BreakingTicker from "@/components/BreakingTicker";
+
+const PUBLISHER_ID = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID ?? "";
 
 export const metadata: Metadata = {
   title: "NepaliWave — Nepal's Independent Voice",
@@ -24,6 +27,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
+      <head>
+        {PUBLISHER_ID && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${PUBLISHER_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
+      </head>
       <body className="min-h-full flex flex-col bg-white">
         <Header />
         <BreakingTicker />

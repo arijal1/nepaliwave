@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllArticles, getArticleBySlug, getRecentArticles } from "@/lib/articles";
 import { formatDate } from "@/data/mockNews";
+import AdUnit from "@/components/AdUnit";
 import NewsCard from "@/components/NewsCard";
 
 export const revalidate = 300;
@@ -107,9 +108,22 @@ export default async function ArticlePage({ params }: Props) {
             </div>
           )}
 
-          {/* Body */}
+          {/* Body — ad injected after 3rd paragraph */}
           <div className="article-body">
-            {article.body.map((para, i) => <p key={i}>{para}</p>)}
+            {article.body.map((para, i) => (
+              <>
+                <p key={i}>{para}</p>
+                {i === 2 && (
+                  <AdUnit
+                    key="in-article-ad"
+                    slot="1122334455"
+                    format="rectangle"
+                    className="my-6 clear-both"
+                    style={{ minHeight: 250 }}
+                  />
+                )}
+              </>
+            ))}
           </div>
 
           {/* NepaliWave Angle */}
@@ -160,6 +174,9 @@ export default async function ArticlePage({ params }: Props) {
                 {related.map(a => <NewsCard key={a.id} article={a} variant="horizontal" />)}
               </div>
             </div>
+
+            {/* Sidebar ad */}
+            <AdUnit slot="5544332211" format="vertical" style={{ minHeight: 250 }} />
 
             {/* More in category */}
             <div className="rounded-xl p-4" style={{ background: "#EEF2F8" }}>

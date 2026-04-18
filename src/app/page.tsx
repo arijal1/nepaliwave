@@ -1,6 +1,7 @@
 import Link from "next/link";
 import FeaturedArticle from "@/components/FeaturedArticle";
 import NewsCard from "@/components/NewsCard";
+import AdUnit from "@/components/AdUnit";
 import { categories } from "@/data/mockNews";
 import {
   getAllArticles,
@@ -29,6 +30,9 @@ export default function HomePage() {
       <section className="mb-8">
         <FeaturedArticle article={featured} />
       </section>
+
+      {/* ── Ad: below hero ── */}
+      <AdUnit slot="1234567890" format="horizontal" className="mb-8" style={{ minHeight: 90 }} />
 
       {/* ── Top Stories + Most Read ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
@@ -66,6 +70,9 @@ export default function HomePage() {
           ))}
         </div>
       </div>
+
+      {/* ── Ad: between sections ── */}
+      <AdUnit slot="0987654321" format="auto" className="mb-10" style={{ minHeight: 90 }} />
 
       {/* ── More Stories ── */}
       <section className="mb-10">
