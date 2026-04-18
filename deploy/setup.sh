@@ -62,6 +62,8 @@ if [ -d "$APP_DIR/.git" ]; then
 else
   log "Cloning repository..."
   rm -rf "$APP_DIR"
+  mkdir -p "$APP_DIR"
+  chown "$APP_USER":"$APP_USER" "$APP_DIR"
   sudo -u "$APP_USER" git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
 fi
 
