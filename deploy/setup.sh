@@ -40,7 +40,7 @@ if command -v node &>/dev/null && [[ $(node -v) == v20* ]]; then
   log "Node.js 20 already installed: $(node -v)"
 else
   log "Installing Node.js 20 LTS..."
-  curl -fsSL https://deb.nodesource.com/setup_20.x | bash - -qq
+  curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   apt-get install -y -qq nodejs
 fi
 log "Node.js: $(node -v) | npm: $(npm -v)"
