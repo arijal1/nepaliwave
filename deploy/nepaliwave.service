@@ -1,0 +1,21 @@
+[Unit]
+Description=NepaliWave Next.js App
+After=network.target
+
+[Service]
+Type=simple
+User=nepaliwave
+WorkingDirectory=/var/www/nepaliwave
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=nepaliwave
+
+[Install]
+WantedBy=multi-user.target
