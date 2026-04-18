@@ -1,2 +1,0 @@
-# nepaliwave
-nepaliwave
