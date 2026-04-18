@@ -1,23 +1,24 @@
 import Link from "next/link";
 import { categories } from "@/data/mockNews";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1a1a1a] text-white mt-16">
-      {/* Main footer */}
+    <footer className="mt-16" style={{ background: "#0A1628" }}>
+      {/* Gold top border */}
+      <div style={{ height: 3, background: "linear-gradient(90deg, #E8A020, #14A8AE, #E8A020)" }} />
+
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
           {/* Brand */}
           <div className="md:col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <span className="text-2xl font-bold" style={{ fontFamily: "Georgia, serif" }}>
-                NepaliWave
-              </span>
+              <Logo size="sm" variant="full" />
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed" style={{ fontFamily: "Arial, sans-serif" }}>
+            <p className="text-blue-300 text-sm leading-relaxed mt-4" style={{ fontFamily: "Arial, sans-serif" }}>
               Nepal's independent AI-powered news source. Real stories, no spin — just the NepaliWave angle.
             </p>
-            {/* Social links */}
             <div className="flex gap-3 mt-5">
               {[
                 { label: "Facebook", icon: "f" },
@@ -29,8 +30,8 @@ export default function Footer() {
                   key={label}
                   href="#"
                   aria-label={label}
-                  className="w-9 h-9 rounded-full bg-gray-700 hover:bg-[#c41230] flex items-center justify-center text-sm transition-colors"
-                  style={{ fontFamily: "Arial, sans-serif" }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all hover:scale-110"
+                  style={{ background: "#1A3A6E", color: "#E8A020", fontFamily: "Arial, sans-serif" }}
                 >
                   {icon}
                 </a>
@@ -38,18 +39,15 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Categories */}
+          {/* Sections */}
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
+            <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#E8A020", fontFamily: "Arial, sans-serif" }}>
               Sections
             </h3>
             <ul className="space-y-2" style={{ fontFamily: "Arial, sans-serif" }}>
               {categories.map((cat) => (
                 <li key={cat.value}>
-                  <Link
-                    href={`/category/${cat.value}`}
-                    className="text-gray-300 hover:text-white text-sm transition-colors capitalize"
-                  >
+                  <Link href={`/category/${cat.value}`} className="text-blue-300 hover:text-[#E8A020] text-sm transition-colors capitalize">
                     {cat.label}
                   </Link>
                 </li>
@@ -59,15 +57,13 @@ export default function Footer() {
 
           {/* About */}
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
+            <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#E8A020", fontFamily: "Arial, sans-serif" }}>
               About
             </h3>
             <ul className="space-y-2" style={{ fontFamily: "Arial, sans-serif" }}>
               {["About NepaliWave", "How We Work", "AI & Automation", "Editorial Standards", "Contact Us", "Advertise"].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-gray-300 hover:text-white text-sm transition-colors">
-                    {item}
-                  </a>
+                  <a href="#" className="text-blue-300 hover:text-[#E8A020] text-sm transition-colors">{item}</a>
                 </li>
               ))}
             </ul>
@@ -75,25 +71,25 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
+            <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#E8A020", fontFamily: "Arial, sans-serif" }}>
               Stay Updated
             </h3>
-            <p className="text-gray-400 text-sm mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
+            <p className="text-blue-300 text-sm mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
               Get the NepaliWave daily digest in your inbox.
             </p>
             <form className="flex flex-col gap-2">
               <input
                 type="email"
                 placeholder="your@email.com"
-                className="bg-gray-700 text-white text-sm px-3 py-2 rounded border border-gray-600 focus:outline-none focus:border-[#c41230] placeholder-gray-500"
-                style={{ fontFamily: "Arial, sans-serif" }}
+                className="text-white text-sm px-3 py-2 rounded border focus:outline-none placeholder-blue-600"
+                style={{ background: "#1A3A6E", borderColor: "#2D5A9E", fontFamily: "Arial, sans-serif" }}
               />
               <button
                 type="submit"
-                className="bg-[#c41230] hover:bg-[#9a0e24] text-white text-sm font-bold py-2 px-4 rounded transition-colors"
-                style={{ fontFamily: "Arial, sans-serif" }}
+                className="text-white text-sm font-bold py-2 px-4 rounded transition-all hover:opacity-90"
+                style={{ background: "linear-gradient(135deg, #E8A020, #F5C152)", color: "#0F2044", fontFamily: "Arial, sans-serif" }}
               >
-                Subscribe
+                Subscribe Free
               </button>
             </form>
           </div>
@@ -101,15 +97,15 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-gray-800">
+      <div style={{ borderTop: "1px solid #1A3A6E" }}>
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2" style={{ fontFamily: "Arial, sans-serif" }}>
-          <p className="text-gray-500 text-xs">
+          <p className="text-blue-600 text-xs">
             © 2026 NepaliWave. All rights reserved. Powered by AI.
           </p>
-          <div className="flex gap-4 text-xs text-gray-500">
-            <a href="#" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-gray-300 transition-colors">Terms of Use</a>
-            <a href="#" className="hover:text-gray-300 transition-colors">Cookie Policy</a>
+          <div className="flex gap-4 text-xs text-blue-600">
+            {["Privacy Policy", "Terms of Use", "Cookie Policy"].map((item) => (
+              <a key={item} href="#" className="hover:text-blue-300 transition-colors">{item}</a>
+            ))}
           </div>
         </div>
       </div>

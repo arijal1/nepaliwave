@@ -1,81 +1,102 @@
 @import "tailwindcss";
 
 :root {
-  --nw-red: #c41230;
-  --nw-red-dark: #9a0e24;
-  --nw-red-light: #e8192c;
-  --nw-navy: #003893;
-  --nw-navy-light: #0047bb;
-  --nw-gold: #f5a623;
-  --nw-charcoal: #1a1a1a;
-  --nw-gray: #6b7280;
-  --nw-light-gray: #f3f4f6;
-  --nw-border: #e5e7eb;
+  /* ── NepaliWave Brand Palette ── */
+  --nw-navy:       #0F2044;   /* deep midnight navy — primary brand */
+  --nw-navy-mid:   #1A3A6E;   /* mid navy for hovers */
+  --nw-gold:       #E8A020;   /* warm saffron gold — Nepal sun */
+  --nw-gold-light: #F5C152;   /* lighter gold for text on dark */
+  --nw-crimson:    #C41230;   /* breaking news / urgent CTAs */
+  --nw-teal:       #0D7377;   /* secondary accent */
+  --nw-teal-light: #14A8AE;
+  --nw-bg:         #F8F7F4;   /* warm off-white page bg */
+  --nw-bg-card:    #FFFFFF;
+  --nw-text:       #111827;
+  --nw-text-muted: #6B7280;
+  --nw-border:     #E5E7EB;
+  --nw-border-dark:#D1D5DB;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   font-family: "Georgia", "Times New Roman", serif;
-  background-color: #ffffff;
-  color: #1a1a1a;
+  background-color: var(--nw-bg);
+  color: var(--nw-text);
   line-height: 1.6;
 }
 
+/* ── Breaking ticker ── */
 @keyframes ticker {
-  0% { transform: translateX(100%); }
+  0%   { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
-
 .ticker-animate {
-  animation: ticker 30s linear infinite;
+  animation: ticker 35s linear infinite;
   white-space: nowrap;
 }
 
-.news-card {
-  transition: box-shadow 0.2s ease;
-}
-
+/* ── Card hover ── */
+.news-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
 .news-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 24px rgba(15,32,68,0.12);
+  transform: translateY(-2px);
 }
 
-.img-zoom {
-  overflow: hidden;
-}
+/* ── Image zoom ── */
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform 0.45s ease; }
+.img-zoom:hover img { transform: scale(1.05); }
 
-.img-zoom img {
-  transition: transform 0.4s ease;
-}
-
-.img-zoom:hover img {
-  transform: scale(1.04);
-}
-
+/* ── Article body ── */
 .article-body p {
   margin-bottom: 1.5rem;
   font-size: 1.0625rem;
-  line-height: 1.8;
-  color: #1a1a1a;
+  line-height: 1.85;
+  color: var(--nw-text);
 }
-
 .article-body p:first-child::first-letter {
   float: left;
-  font-size: 4rem;
-  line-height: 0.8;
-  margin-right: 0.15em;
-  margin-top: 0.1em;
-  color: var(--nw-red);
+  font-size: 4.2rem;
+  line-height: 0.78;
+  margin-right: 0.12em;
+  margin-top: 0.08em;
+  color: var(--nw-gold);
   font-family: Georgia, serif;
   font-weight: bold;
 }
 
+/* ── Section rule ── */
 .section-rule {
-  border-top: 3px solid var(--nw-red);
+  border-top: 3px solid var(--nw-gold);
 }
 
+/* ── Gold underline on headings ── */
+.heading-gold {
+  position: relative;
+  display: inline-block;
+}
+.heading-gold::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background: var(--nw-gold);
+  border-radius: 2px;
+}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: var(--nw-red); border-radius: 3px; }
+::-webkit-scrollbar-track { background: var(--nw-bg); }
+::-webkit-scrollbar-thumb { background: var(--nw-navy); border-radius: 3px; }
+
+/* ── Category pill colours ── */
+.cat-politics     { background: #7C1D2F; }
+.cat-business     { background: #1E3A5F; }
+.cat-sports       { background: #14532D; }
+.cat-technology   { background: #3B1F6E; }
+.cat-entertainment{ background: #6B1D5F; }
+.cat-world        { background: #0D4F52; }
+.cat-health       { background: #7C3410; }
