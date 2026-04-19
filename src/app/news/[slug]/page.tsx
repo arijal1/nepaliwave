@@ -227,40 +227,6 @@ export default async function ArticlePage({ params }: Props) {
           <aside className="lg:col-span-1">
             <div style={{ position: "sticky", top: 80, display: "flex", flexDirection: "column", gap: 28 }}>
 
-              {/* Newsletter */}
-              <div style={{
-                background: "#111827", borderRadius: 14, padding: 24,
-                borderTop: "3px solid #E8981D",
-              }}>
-                <h3 style={{
-                  fontFamily: "Georgia, serif", color: "white",
-                  fontSize: 17, fontWeight: 700, margin: "0 0 8px",
-                }}>
-                  Stay informed
-                </h3>
-                <p style={{
-                  color: "#94A3B8", fontSize: 13, lineHeight: 1.6, marginBottom: 16,
-                  fontFamily: "system-ui, Arial, sans-serif",
-                }}>
-                  Nepal's top stories in your inbox daily.
-                </p>
-                <input type="email" placeholder="your@email.com" style={{
-                  width: "100%", background: "rgba(255,255,255,0.08)",
-                  border: "1px solid rgba(255,255,255,0.14)", borderRadius: 8,
-                  padding: "10px 14px", color: "#F1F5F9", fontSize: 13,
-                  outline: "none", fontFamily: "system-ui, Arial, sans-serif",
-                  marginBottom: 8, boxSizing: "border-box",
-                }} />
-                <button style={{
-                  width: "100%", background: "#C8102E", color: "white",
-                  fontWeight: 700, padding: "11px 0", borderRadius: 8,
-                  border: "none", cursor: "pointer", fontSize: 13,
-                  fontFamily: "system-ui, Arial, sans-serif",
-                }}>
-                  Subscribe Free
-                </button>
-              </div>
-
               {/* Related */}
               <div>
                 <div style={{ borderTop: "3px solid #C8102E", paddingTop: 14, marginBottom: 18 }}>
