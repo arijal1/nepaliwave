@@ -29,7 +29,17 @@ export default function BreakingTicker() {
 
       {/* Scrolling strip */}
       <div style={{ flex: 1, overflow: "hidden", padding: "8px 0", minWidth: 0 }}>
-        <div className="ticker-track">
+        <div
+          className="ticker-track"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 56,
+            whiteSpace: "nowrap",
+            animation: "ticker-scroll 50s linear infinite",
+            willChange: "transform",
+          }}
+        >
           {[...breaking, ...breaking].map((article, i) => (
             <a
               key={`${article.id}-${i}`}

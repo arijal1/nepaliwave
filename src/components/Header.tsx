@@ -42,11 +42,11 @@ export default function Header() {
         gap: 12,
       }}>
         <Link href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
-          <Logo size={scrolled ? "sm" : "md"} variant="full" />
+          <Logo size={isMobile || scrolled ? "sm" : "md"} variant="full" />
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {!(isMobile && scrolled) && (
+          {!isMobile && (
             <div style={{
               display: "flex", alignItems: "center", gap: 5,
               background: "#C8102E", padding: "4px 10px", borderRadius: 4,
@@ -76,8 +76,10 @@ export default function Header() {
             </button>
             {searchOpen && (
               <div style={{
-                position: "absolute", right: 0, top: 44, width: 290,
-                background: "white", borderRadius: 12, zIndex: 100,
+                ...(isMobile
+                  ? { position: "fixed", top: 60, left: 12, right: 12, width: "auto" }
+                  : { position: "absolute", right: 0, top: 44, width: 290 }),
+                background: "white", borderRadius: 12, zIndex: 200,
                 boxShadow: "0 16px 48px rgba(0,0,0,0.22)", overflow: "hidden",
               }}>
                 <input
