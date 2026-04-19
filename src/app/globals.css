@@ -39,11 +39,20 @@ body {
 }
 
 /* ── Card hover ── */
-.news-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
-.news-card:hover {
-  box-shadow: 0 8px 24px rgba(15,32,68,0.12);
-  transform: translateY(-2px);
+.nw-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.nw-card:hover {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.14) !important;
+  transform: translateY(-3px);
 }
+.nw-card-minimal:hover h4 { color: #0D7377; }
+
+/* ── Nav category link hover ── */
+.nav-cat-link { transition: color 0.2s; }
+.nav-cat-link:hover { color: #E8A020 !important; }
+
+/* ── Category pill hover ── */
+.category-pill { transition: box-shadow 0.2s, transform 0.2s; }
+.category-pill:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: translateY(-1px); }
 
 /* ── Image zoom ── */
 .img-zoom { overflow: hidden; }
