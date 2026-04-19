@@ -17,7 +17,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="w-full sticky top-0 z-50 shadow-lg">
+    <header style={{ position: "sticky", top: 0, zIndex: 50, width: "100%", boxShadow: "0 2px 8px rgba(0,0,0,0.3)" }}>
 
       {/* ── Top utility bar ── */}
       <div style={{ background: "#0F2044" }} className="text-white">

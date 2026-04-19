@@ -40,10 +40,10 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="min-h-full flex flex-col bg-white">
+      <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#F8F7F4" }}>
         <Header />
         <BreakingTicker />
-        <main className="flex-1">{children}</main>
+        <main style={{ flex: 1 }}>{children}</main>
         <Footer />
       </body>
     </html>
