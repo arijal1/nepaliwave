@@ -151,9 +151,20 @@ export default function Header() {
         </nav>
       )}
 
-      {/* ── Mobile drawer ── */}
+      {/* ── Mobile drawer — absolute overlay, does NOT push content down ── */}
       {isMobile && menuOpen && (
-        <nav style={{ background: "#0D1320", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+        <nav style={{
+          position: "absolute", top: "100%", left: 0, right: 0,
+          background: "#0D1320", zIndex: 200,
+          boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
+          animation: "slideDown 0.2s ease-out",
+        }}>
+          <style>{`
+            @keyframes slideDown {
+              from { opacity: 0; transform: translateY(-8px); }
+              to   { opacity: 1; transform: translateY(0); }
+            }
+          `}</style>
           <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
             <li>
               <Link href="/" onClick={() => setMenuOpen(false)} style={{
@@ -168,7 +179,7 @@ export default function Header() {
             {categories.map(cat => (
               <li key={cat.value}>
                 <Link href={`/category/${cat.value}`} onClick={() => setMenuOpen(false)} style={{
-                  display: "block", padding: "15px 20px", fontSize: 15, color: "#9EB3C8",
+                  display: "block", padding: "15px 20px", fontSize: 15, color: "#CBD5E1",
                   textDecoration: "none", textTransform: "capitalize",
                   borderBottom: "1px solid rgba(255,255,255,0.06)",
                   fontFamily: "system-ui, Arial, sans-serif",
