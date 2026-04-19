@@ -21,10 +21,9 @@ export async function generateMetadata({ params }: Props) {
   return { title: `${article.title} | NepaliWave`, description: article.excerpt };
 }
 
-const catClass: Record<string, string> = {
-  politics: "cat-politics", business: "cat-business", sports: "cat-sports",
-  technology: "cat-technology", entertainment: "cat-entertainment",
-  world: "cat-world", health: "cat-health",
+const catColors: Record<string, string> = {
+  politics: "#991B1B", business: "#1E3A5F", sports: "#14532D",
+  technology: "#4C1D95", entertainment: "#831843", world: "#134E4A", health: "#7C2D12",
 };
 
 export default async function ArticlePage({ params }: Props) {
@@ -33,163 +32,277 @@ export default async function ArticlePage({ params }: Props) {
   if (!article) notFound();
 
   const related = getRecentArticles(article.id, 3);
-  const cc = catClass[article.category] ?? "bg-gray-700";
+  const catColor = catColors[article.category] ?? "#374151";
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8" style={{ background: "var(--nw-bg)" }}>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <div style={{ background: "#F4F5F7", minHeight: "100vh" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "28px 16px 48px" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
-        {/* ── Article ── */}
-        <article className="lg:col-span-2">
-          {/* Breadcrumb */}
-          <nav className="text-xs mb-4 flex items-center gap-2" style={{ color: "var(--nw-text-muted)", fontFamily: "Arial, sans-serif" }}>
-            <Link href="/" className="hover:text-[#0D7377] transition-colors">Home</Link>
-            <span>›</span>
-            <Link href={`/category/${article.category}`} className="hover:text-[#0D7377] transition-colors capitalize">{article.category}</Link>
-            <span>›</span>
-            <span className="line-clamp-1">{article.title.substring(0, 50)}…</span>
-          </nav>
+          {/* ── Article ── */}
+          <article className="lg:col-span-2" style={{ background: "white", borderRadius: 16, padding: "clamp(20px,4vw,40px)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
 
-          {/* Category + breaking */}
-          <div className="flex items-center gap-3 mb-3">
-            <Link href={`/category/${article.category}`}>
-              <span className={`text-xs font-bold uppercase tracking-widest text-white px-2.5 py-1 rounded-full ${cc}`} style={{ fontFamily: "Arial, sans-serif" }}>
+            {/* Breadcrumb */}
+            <nav style={{
+              display: "flex", alignItems: "center", gap: 6,
+              fontSize: 12, color: "#9CA3AF", marginBottom: 20,
+              fontFamily: "system-ui, Arial, sans-serif", flexWrap: "wrap",
+            }}>
+              <Link href="/" style={{ color: "#9CA3AF", textDecoration: "none" }}>Home</Link>
+              <span>›</span>
+              <Link href={`/category/${article.category}`} style={{ color: "#9CA3AF", textDecoration: "none", textTransform: "capitalize" }}>
                 {article.category}
-              </span>
-            </Link>
-            {article.breaking && (
-              <span className="text-xs font-bold uppercase tracking-wider flex items-center gap-1" style={{ color: "var(--nw-crimson)", fontFamily: "Arial, sans-serif" }}>
-                <span className="w-2 h-2 rounded-full animate-pulse inline-block" style={{ background: "var(--nw-crimson)" }} /> Breaking
-              </span>
-            )}
-          </div>
-
-          {/* Title */}
-          <h1 className="text-2xl md:text-4xl font-bold leading-tight mb-4" style={{ color: "var(--nw-text)" }}>
-            {article.title}
-          </h1>
-
-          {/* Lead */}
-          <p className="text-lg leading-relaxed mb-5 pl-4 italic" style={{ color: "var(--nw-text-muted)", borderLeft: "4px solid var(--nw-gold)" }}>
-            {article.excerpt}
-          </p>
-
-          {/* Meta */}
-          <div className="flex flex-wrap items-center gap-4 text-sm pb-4 mb-4" style={{ color: "var(--nw-text-muted)", borderBottom: "1px solid var(--nw-border)", fontFamily: "Arial, sans-serif" }}>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ background: "var(--nw-navy)" }}>
-                {article.author.charAt(0)}
-              </div>
-              <span className="font-semibold" style={{ color: "var(--nw-text)" }}>{article.author}</span>
-            </div>
-            <span>·</span>
-            <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
-            <span>·</span>
-            <span>{article.readTime} min read</span>
-            {article.source && <><span>·</span><span style={{ color: "var(--nw-teal)", fontWeight: 600 }}>{article.source}</span></>}
-          </div>
-
-          {/* Share */}
-          <div className="flex items-center gap-3 mb-6" style={{ fontFamily: "Arial, sans-serif" }}>
-            <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--nw-text-muted)" }}>Share:</span>
-            {["Facebook", "Twitter / X", "WhatsApp", "Copy Link"].map(p => (
-              <button key={p} className="text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:shadow-md"
-                style={{ border: "1px solid var(--nw-border)", color: "var(--nw-text-muted)", background: "white" }}>
-                {p}
-              </button>
-            ))}
-          </div>
-
-          {/* Image */}
-          {article.imageUrl && (
-            <div className="rounded-xl overflow-hidden mb-6 shadow-md">
-              <Image src={article.imageUrl} alt={article.imageAlt} width={800} height={450} className="w-full object-cover" priority />
-              <p className="text-xs px-1 mt-2" style={{ color: "var(--nw-text-muted)", fontFamily: "Arial, sans-serif" }}>{article.imageAlt}</p>
-            </div>
-          )}
-
-          {/* Body — ad injected after 3rd paragraph */}
-          <div className="article-body">
-            {article.body.map((para, i) => (
-              <>
-                <p key={i}>{para}</p>
-                {i === 2 && (
-                  <AdUnit
-                    key="in-article-ad"
-                    slot="1122334455"
-                    format="rectangle"
-                    className="my-6 clear-both"
-                    style={{ minHeight: 250 }}
-                  />
-                )}
-              </>
-            ))}
-          </div>
-
-          {/* NepaliWave Angle */}
-          <div className="my-8 rounded-r-xl p-5" style={{ background: "#FFF8E8", borderLeft: "4px solid var(--nw-gold)" }}>
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: "var(--nw-gold)", fontFamily: "Arial, sans-serif" }}>
-              The NepaliWave Angle
-            </p>
-            <p className="text-sm leading-relaxed" style={{ color: "var(--nw-text)", fontFamily: "Arial, sans-serif" }}>
-              NepaliWave brings you this story with independent editorial analysis — cutting through the headlines to tell you what it actually means for Nepal and Nepalis.
-            </p>
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mt-6 pt-6" style={{ borderTop: "1px solid var(--nw-border)" }}>
-            {article.tags.map(tag => (
-              <span key={tag} className="text-xs px-3 py-1 rounded-full cursor-pointer transition-colors hover:bg-gray-200"
-                style={{ background: "var(--nw-bg)", color: "var(--nw-text-muted)", border: "1px solid var(--nw-border)", fontFamily: "Arial, sans-serif" }}>
-                #{tag}
-              </span>
-            ))}
-          </div>
-        </article>
-
-        {/* ── Sidebar ── */}
-        <aside className="lg:col-span-1">
-          <div className="sticky top-4 space-y-8">
-            {/* Newsletter */}
-            <div className="rounded-2xl p-5 text-white" style={{ background: "linear-gradient(135deg, #0F2044, #1A3A6E)", borderTop: "3px solid #E8A020" }}>
-              <h3 className="font-bold text-base mb-2" style={{ fontFamily: "Georgia, serif" }}>Stay informed</h3>
-              <p className="text-blue-200 text-xs leading-relaxed mb-3" style={{ fontFamily: "Arial, sans-serif" }}>
-                Nepal's top stories in your inbox daily.
-              </p>
-              <input type="email" placeholder="your@email.com"
-                className="w-full text-white text-xs px-3 py-2 rounded-lg border mb-2 focus:outline-none placeholder-blue-500"
-                style={{ background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)", fontFamily: "Arial, sans-serif" }} />
-              <button className="w-full font-bold text-xs py-2 rounded-lg transition-all hover:opacity-90"
-                style={{ background: "#E8A020", color: "#0F2044", fontFamily: "Arial, sans-serif" }}>
-                Subscribe Free
-              </button>
-            </div>
-
-            {/* Related */}
-            <div>
-              <div className="section-rule mb-4 pt-3">
-                <h3 className="text-base font-bold uppercase tracking-wide heading-gold" style={{ fontFamily: "Arial, sans-serif" }}>Related Stories</h3>
-              </div>
-              <div className="space-y-3">
-                {related.map(a => <NewsCard key={a.id} article={a} variant="horizontal" />)}
-              </div>
-            </div>
-
-            {/* Sidebar ad */}
-            <AdUnit slot="5544332211" format="vertical" style={{ minHeight: 250 }} />
-
-            {/* More in category */}
-            <div className="rounded-xl p-4" style={{ background: "#EEF2F8" }}>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: "var(--nw-navy)", fontFamily: "Arial, sans-serif" }}>
-                More in {article.category}
-              </p>
-              <Link href={`/category/${article.category}`} className="text-sm font-bold hover:underline capitalize"
-                style={{ color: "var(--nw-teal)", fontFamily: "Arial, sans-serif" }}>
-                View all {article.category} stories →
               </Link>
+              <span>›</span>
+              <span style={{ color: "#6B7280", overflow: "hidden", whiteSpace: "nowrap", maxWidth: 200, textOverflow: "ellipsis" }}>
+                {article.title.substring(0, 48)}…
+              </span>
+            </nav>
+
+            {/* Category + breaking */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
+              <Link href={`/category/${article.category}`} style={{ textDecoration: "none" }}>
+                <span style={{
+                  background: catColor, color: "white",
+                  fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                  letterSpacing: "0.08em", padding: "3px 10px", borderRadius: 4,
+                  fontFamily: "system-ui, Arial, sans-serif",
+                }}>
+                  {article.category}
+                </span>
+              </Link>
+              {article.breaking && (
+                <span style={{
+                  display: "flex", alignItems: "center", gap: 5,
+                  fontSize: 11, fontWeight: 700, color: "#C8102E",
+                  fontFamily: "system-ui, Arial, sans-serif",
+                }}>
+                  <span className="ticker-dot" style={{ background: "#C8102E", width: 6, height: 6 }} />
+                  Breaking News
+                </span>
+              )}
             </div>
-          </div>
-        </aside>
+
+            {/* Title */}
+            <h1 style={{
+              fontFamily: "Georgia, serif",
+              fontSize: "clamp(22px, 4vw, 36px)",
+              fontWeight: 700, lineHeight: 1.25,
+              color: "#111827", margin: "0 0 18px",
+            }}>
+              {article.title}
+            </h1>
+
+            {/* Lead / excerpt */}
+            <p style={{
+              fontSize: 17, lineHeight: 1.7, color: "#4B5563",
+              padding: "14px 0 14px 18px",
+              borderLeft: "4px solid #E8981D",
+              fontStyle: "italic", margin: "0 0 24px",
+              fontFamily: "Georgia, serif",
+            }}>
+              {article.excerpt}
+            </p>
+
+            {/* Meta */}
+            <div style={{
+              display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12,
+              paddingBottom: 20, marginBottom: 20,
+              borderBottom: "1px solid #E5E7EB",
+              fontSize: 13, color: "#6B7280",
+              fontFamily: "system-ui, Arial, sans-serif",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: "50%",
+                  background: "#C8102E", display: "flex", alignItems: "center",
+                  justifyContent: "center", color: "white", fontSize: 13, fontWeight: 700,
+                  flexShrink: 0,
+                }}>
+                  {article.author.charAt(0)}
+                </div>
+                <span style={{ fontWeight: 600, color: "#111827" }}>{article.author}</span>
+              </div>
+              <span style={{ color: "#D1D5DB" }}>·</span>
+              <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
+              <span style={{ color: "#D1D5DB" }}>·</span>
+              <span>{article.readTime} min read</span>
+              {article.source && (
+                <>
+                  <span style={{ color: "#D1D5DB" }}>·</span>
+                  <span style={{ color: "#0EA5E9", fontWeight: 600 }}>{article.source}</span>
+                </>
+              )}
+            </div>
+
+            {/* Share */}
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8, marginBottom: 28, flexWrap: "wrap",
+              fontFamily: "system-ui, Arial, sans-serif",
+            }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                Share:
+              </span>
+              {["Facebook", "Twitter", "WhatsApp", "Copy Link"].map(p => (
+                <button key={p} style={{
+                  fontSize: 12, fontWeight: 600, padding: "5px 14px", borderRadius: 50,
+                  border: "1px solid #E5E7EB", color: "#6B7280", background: "white",
+                  cursor: "pointer", fontFamily: "inherit",
+                }}>
+                  {p}
+                </button>
+              ))}
+            </div>
+
+            {/* Image */}
+            {article.imageUrl && (
+              <div style={{ borderRadius: 12, overflow: "hidden", marginBottom: 28, boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
+                <Image
+                  src={article.imageUrl} alt={article.imageAlt}
+                  width={800} height={450}
+                  style={{ width: "100%", height: "auto", display: "block", objectFit: "cover" }}
+                  priority
+                />
+                <p style={{
+                  fontSize: 11, color: "#9CA3AF", padding: "8px 12px",
+                  fontFamily: "system-ui, Arial, sans-serif", background: "#F9FAFB",
+                  margin: 0,
+                }}>
+                  {article.imageAlt}
+                </p>
+              </div>
+            )}
+
+            {/* Body */}
+            <div className="article-body">
+              {article.body.map((para, i) => (
+                <>
+                  <p key={i}>{para}</p>
+                  {i === 2 && (
+                    <AdUnit key="mid-ad" slot="1122334455" format="rectangle" className="my-6" style={{ minHeight: 250 }} />
+                  )}
+                </>
+              ))}
+            </div>
+
+            {/* NepaliWave Angle */}
+            <div style={{
+              margin: "32px 0", padding: "20px 24px", borderRadius: 12,
+              background: "#FFFBEB", borderLeft: "4px solid #E8981D",
+            }}>
+              <p style={{
+                fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                letterSpacing: "0.12em", color: "#E8981D",
+                fontFamily: "system-ui, Arial, sans-serif", marginBottom: 8,
+              }}>
+                The NepaliWave Angle
+              </p>
+              <p style={{
+                fontSize: 14, lineHeight: 1.7, color: "#374151",
+                fontFamily: "system-ui, Arial, sans-serif", margin: 0,
+              }}>
+                NepaliWave brings you this story with independent editorial analysis — cutting through the headlines to tell you what it actually means for Nepal and Nepalis.
+              </p>
+            </div>
+
+            {/* Tags */}
+            <div style={{
+              display: "flex", flexWrap: "wrap", gap: 8,
+              paddingTop: 24, marginTop: 24, borderTop: "1px solid #E5E7EB",
+            }}>
+              {article.tags.map(tag => (
+                <span key={tag} style={{
+                  fontSize: 12, padding: "5px 12px", borderRadius: 50,
+                  background: "#F3F4F6", color: "#6B7280",
+                  border: "1px solid #E5E7EB",
+                  fontFamily: "system-ui, Arial, sans-serif",
+                }}>
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </article>
+
+          {/* ── Sidebar ── */}
+          <aside className="lg:col-span-1">
+            <div style={{ position: "sticky", top: 80, display: "flex", flexDirection: "column", gap: 28 }}>
+
+              {/* Newsletter */}
+              <div style={{
+                background: "#111827", borderRadius: 14, padding: 24,
+                borderTop: "3px solid #E8981D",
+              }}>
+                <h3 style={{
+                  fontFamily: "Georgia, serif", color: "white",
+                  fontSize: 17, fontWeight: 700, margin: "0 0 8px",
+                }}>
+                  Stay informed
+                </h3>
+                <p style={{
+                  color: "#94A3B8", fontSize: 13, lineHeight: 1.6, marginBottom: 16,
+                  fontFamily: "system-ui, Arial, sans-serif",
+                }}>
+                  Nepal's top stories in your inbox daily.
+                </p>
+                <input type="email" placeholder="your@email.com" style={{
+                  width: "100%", background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.14)", borderRadius: 8,
+                  padding: "10px 14px", color: "#F1F5F9", fontSize: 13,
+                  outline: "none", fontFamily: "system-ui, Arial, sans-serif",
+                  marginBottom: 8, boxSizing: "border-box",
+                }} />
+                <button style={{
+                  width: "100%", background: "#C8102E", color: "white",
+                  fontWeight: 700, padding: "11px 0", borderRadius: 8,
+                  border: "none", cursor: "pointer", fontSize: 13,
+                  fontFamily: "system-ui, Arial, sans-serif",
+                }}>
+                  Subscribe Free
+                </button>
+              </div>
+
+              {/* Related */}
+              <div>
+                <div style={{ borderTop: "3px solid #C8102E", paddingTop: 14, marginBottom: 18 }}>
+                  <h3 style={{
+                    fontSize: 13, fontWeight: 700, textTransform: "uppercase",
+                    letterSpacing: "0.1em", color: "#111827",
+                    fontFamily: "system-ui, Arial, sans-serif", margin: 0,
+                  }}>
+                    Related Stories
+                  </h3>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {related.map(a => <NewsCard key={a.id} article={a} variant="horizontal" />)}
+                </div>
+              </div>
+
+              <AdUnit slot="5544332211" format="vertical" style={{ minHeight: 250 }} />
+
+              {/* More in category */}
+              <div style={{
+                background: "white", borderRadius: 12, padding: 20,
+                border: "1px solid #E5E7EB",
+              }}>
+                <p style={{
+                  fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+                  letterSpacing: "0.12em", color: "#6B7280",
+                  fontFamily: "system-ui, Arial, sans-serif", marginBottom: 12,
+                }}>
+                  More in {article.category}
+                </p>
+                <Link href={`/category/${article.category}`} style={{
+                  color: "#C8102E", fontWeight: 700, textDecoration: "none",
+                  fontSize: 14, textTransform: "capitalize",
+                  fontFamily: "system-ui, Arial, sans-serif",
+                }}>
+                  View all {article.category} stories →
+                </Link>
+              </div>
+            </div>
+          </aside>
+
+        </div>
       </div>
     </div>
   );

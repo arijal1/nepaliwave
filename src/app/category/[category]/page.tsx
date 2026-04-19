@@ -32,14 +32,14 @@ const descriptions: Record<string, string> = {
   health:        "Public health, healthcare policy, and wellness news from across Nepal.",
 };
 
-const bannerGradients: Record<string, string> = {
-  politics:      "linear-gradient(135deg, #7C1D2F, #A82B3F)",
-  business:      "linear-gradient(135deg, #1E3A5F, #2D5A9E)",
-  sports:        "linear-gradient(135deg, #14532D, #1E7A3F)",
-  technology:    "linear-gradient(135deg, #3B1F6E, #5A2FA0)",
-  entertainment: "linear-gradient(135deg, #6B1D5F, #9E2D8F)",
-  world:         "linear-gradient(135deg, #0D4F52, #0D7377)",
-  health:        "linear-gradient(135deg, #7C3410, #B04F1A)",
+const catAccents: Record<string, string> = {
+  politics:      "#991B1B",
+  business:      "#1E3A5F",
+  sports:        "#14532D",
+  technology:    "#4C1D95",
+  entertainment: "#831843",
+  world:         "#134E4A",
+  health:        "#7C2D12",
 };
 
 export default async function CategoryPage({ params }: Props) {
@@ -48,61 +48,100 @@ export default async function CategoryPage({ params }: Props) {
   if (!cat) notFound();
 
   const catArticles = getAllArticles(20, cat.value as Category);
-  const gradient = bannerGradients[cat.value] ?? "linear-gradient(135deg, #0F2044, #1A3A6E)";
+  const accent = catAccents[cat.value] ?? "#111827";
 
   return (
-    <div>
+    <div style={{ background: "#F4F5F7", minHeight: "100vh" }}>
+
       {/* Banner */}
-      <div className="text-white py-12 px-4" style={{ background: gradient, borderBottom: "3px solid #E8A020" }}>
-        <div className="max-w-7xl mx-auto">
-          <nav className="text-xs mb-3 flex items-center gap-2" style={{ color: "rgba(255,255,255,0.6)", fontFamily: "Arial, sans-serif" }}>
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+      <div style={{
+        background: `linear-gradient(135deg, ${accent} 0%, #111827 100%)`,
+        borderBottom: "3px solid #E8981D",
+        padding: "40px 16px 36px",
+      }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <nav style={{
+            display: "flex", alignItems: "center", gap: 8,
+            fontSize: 12, color: "rgba(255,255,255,0.55)",
+            fontFamily: "system-ui, Arial, sans-serif", marginBottom: 14,
+          }}>
+            <Link href="/" style={{ color: "rgba(255,255,255,0.55)", textDecoration: "none" }}>Home</Link>
             <span>›</span>
-            <span className="text-white">{cat.label}</span>
+            <span style={{ color: "white" }}>{cat.label}</span>
           </nav>
-          <h1 className="text-4xl font-bold mb-2" style={{ fontFamily: "Georgia, serif" }}>{cat.label}</h1>
-          <p className="text-sm max-w-xl" style={{ color: "rgba(255,255,255,0.8)", fontFamily: "Arial, sans-serif" }}>
+          <h1 style={{
+            color: "white", fontFamily: "Georgia, serif",
+            fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 700,
+            margin: "0 0 10px", textTransform: "capitalize",
+          }}>
+            {cat.label}
+          </h1>
+          <p style={{
+            color: "rgba(203,213,225,0.85)", fontSize: 14,
+            maxWidth: 560, lineHeight: 1.65, margin: 0,
+            fontFamily: "system-ui, Arial, sans-serif",
+          }}>
             {descriptions[cat.value]}
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8" style={{ background: "var(--nw-bg)" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 16px" }}>
+
         {/* Other category pills */}
-        <div className="flex flex-wrap gap-2 mb-8 pb-6" style={{ borderBottom: "1px solid var(--nw-border)", fontFamily: "Arial, sans-serif" }}>
+        <div style={{
+          display: "flex", flexWrap: "wrap", gap: 8,
+          marginBottom: 32, paddingBottom: 28,
+          borderBottom: "1px solid #E5E7EB",
+        }}>
           {categories.filter(c => c.value !== cat.value).map(c => (
-            <Link key={c.value} href={`/category/${c.value}`}
-              className="text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:shadow-md capitalize"
-              style={{ border: "1px solid var(--nw-border)", color: "var(--nw-navy)", background: "white" }}>
+            <Link key={c.value} href={`/category/${c.value}`} className="category-pill" style={{
+              fontSize: 12, fontWeight: 600, padding: "6px 16px", borderRadius: 50,
+              border: "1px solid #E5E7EB", color: "#374151", background: "white",
+              textDecoration: "none", textTransform: "capitalize",
+              fontFamily: "system-ui, Arial, sans-serif",
+            }}>
               {c.label}
             </Link>
           ))}
         </div>
 
         {catArticles.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-lg mb-4" style={{ color: "var(--nw-text-muted)", fontFamily: "Arial, sans-serif" }}>
+          <div style={{ textAlign: "center", padding: "80px 20px" }}>
+            <p style={{ color: "#6B7280", fontSize: 16, marginBottom: 20 }}>
               No articles in {cat.label} yet — check back soon.
             </p>
-            <Link href="/" className="font-bold hover:underline" style={{ color: "var(--nw-teal)", fontFamily: "Arial, sans-serif" }}>
+            <Link href="/" style={{
+              color: "#C8102E", fontWeight: 700, textDecoration: "none",
+              fontFamily: "system-ui, Arial, sans-serif",
+            }}>
               ← Back to Home
             </Link>
           </div>
         ) : (
-          <div>
-            <div className="section-rule mb-4 pt-3">
-              <h2 className="text-base font-bold uppercase tracking-wide heading-gold" style={{ fontFamily: "Arial, sans-serif" }}>
+          <>
+            <div style={{
+              borderTop: "3px solid #C8102E", paddingTop: 14, marginBottom: 24,
+            }}>
+              <h2 style={{
+                fontSize: 14, fontWeight: 700, textTransform: "uppercase",
+                letterSpacing: "0.1em", color: "#111827",
+                fontFamily: "system-ui, Arial, sans-serif", margin: 0,
+              }}>
                 Latest in {cat.label}
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {catArticles.map(a => <NewsCard key={a.id} article={a} variant="default" />)}
             </div>
-          </div>
+          </>
         )}
 
-        <div className="mt-10 pt-6 text-center" style={{ borderTop: "1px solid var(--nw-border)" }}>
-          <Link href="/" className="text-sm font-bold hover:underline" style={{ color: "var(--nw-teal)", fontFamily: "Arial, sans-serif" }}>
+        <div style={{ marginTop: 48, paddingTop: 24, borderTop: "1px solid #E5E7EB", textAlign: "center" }}>
+          <Link href="/" style={{
+            color: "#C8102E", fontWeight: 700, textDecoration: "none",
+            fontSize: 14, fontFamily: "system-ui, Arial, sans-serif",
+          }}>
             ← Back to NepaliWave Home
           </Link>
         </div>

@@ -27,32 +27,34 @@ export default function Header() {
   return (
     <header style={{
       position: "sticky", top: 0, zIndex: 50, width: "100%",
-      background: "#0F2044", borderBottom: "2px solid #E8A020",
+      background: "#111827",
+      borderBottom: scrolled ? "2px solid #C8102E" : "2px solid #E8981D",
       boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.5)" : "0 2px 8px rgba(0,0,0,0.2)",
-      transition: "box-shadow 0.3s",
+      transition: "box-shadow 0.3s, border-color 0.3s",
     }}>
 
       {/* ── Brand bar ── */}
       <div style={{
         maxWidth: 1280, margin: "0 auto",
-        padding: `${scrolled ? 6 : 11}px 16px`,
+        padding: `${scrolled ? 6 : 12}px 16px`,
         transition: "padding 0.3s",
         display: "flex", alignItems: "center", justifyContent: "space-between",
+        gap: 12,
       }}>
         <Link href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
           <Logo size={scrolled ? "sm" : "md"} variant="full" />
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {/* LIVE badge */}
           {!(isMobile && scrolled) && (
             <div style={{
               display: "flex", alignItems: "center", gap: 5,
-              background: "#C41230", padding: "4px 10px", borderRadius: 4,
-              fontSize: 11, fontWeight: "bold", color: "white",
-              fontFamily: "Arial, sans-serif", userSelect: "none",
+              background: "#C8102E", padding: "4px 10px", borderRadius: 4,
+              fontSize: 11, fontWeight: 800, color: "white",
+              fontFamily: "system-ui, Arial, sans-serif", userSelect: "none",
+              letterSpacing: "0.06em",
             }}>
-              <span className="animate-pulse" style={{ width: 6, height: 6, borderRadius: "50%", background: "white", display: "block" }} />
+              <span className="ticker-dot" style={{ width: 6, height: 6 }} />
               LIVE
             </div>
           )}
@@ -74,26 +76,21 @@ export default function Header() {
             </button>
             {searchOpen && (
               <div style={{
-                position: "absolute", right: 0, top: 44, width: 280,
-                background: "white", borderRadius: 10, zIndex: 100,
-                boxShadow: "0 12px 40px rgba(0,0,0,0.25)", overflow: "hidden",
+                position: "absolute", right: 0, top: 44, width: 290,
+                background: "white", borderRadius: 12, zIndex: 100,
+                boxShadow: "0 16px 48px rgba(0,0,0,0.22)", overflow: "hidden",
               }}>
                 <input
-                  autoFocus
-                  type="text"
-                  id="site-search"
-                  name="q"
+                  autoFocus type="text" id="site-search" name="q"
                   placeholder="Search NepaliWave…"
                   style={{
                     width: "100%", padding: "14px 16px", fontSize: 14,
                     color: "#111", outline: "none", border: "none",
-                    fontFamily: "Arial, sans-serif", boxSizing: "border-box",
+                    fontFamily: "system-ui, Arial, sans-serif", boxSizing: "border-box",
                   }}
                 />
                 <div style={{ padding: "8px 16px", background: "#f7f7f7", borderTop: "1px solid #eee" }}>
-                  <p style={{ fontSize: 11, color: "#aaa", margin: 0, fontFamily: "Arial, sans-serif" }}>
-                    Press Enter to search
-                  </p>
+                  <p style={{ fontSize: 11, color: "#aaa", margin: 0 }}>Press Enter to search</p>
                 </div>
               </div>
             )}
@@ -123,14 +120,14 @@ export default function Header() {
 
       {/* ── Desktop category nav ── */}
       {!isMobile && (
-        <nav style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <nav style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 16px", overflowX: "auto" }}>
             <ul style={{ display: "flex", listStyle: "none", margin: 0, padding: 0 }}>
               <li>
                 <Link href="/" style={{
-                  display: "block", padding: "8px 14px", fontSize: 12, fontWeight: "bold",
-                  color: "#E8A020", textDecoration: "none", borderBottom: "2px solid #E8A020",
-                  fontFamily: "Arial, sans-serif", whiteSpace: "nowrap",
+                  display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 700,
+                  color: "#E8981D", textDecoration: "none", borderBottom: "2px solid #E8981D",
+                  fontFamily: "system-ui, Arial, sans-serif", whiteSpace: "nowrap",
                 }}>
                   Home
                 </Link>
@@ -139,7 +136,8 @@ export default function Header() {
                 <li key={cat.value}>
                   <Link href={`/category/${cat.value}`} className="nav-cat-link" style={{
                     display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 500,
-                    color: "#94ADCE", textDecoration: "none", fontFamily: "Arial, sans-serif",
+                    color: "#9EB3C8", textDecoration: "none",
+                    fontFamily: "system-ui, Arial, sans-serif",
                     whiteSpace: "nowrap", textTransform: "capitalize",
                   }}>
                     {cat.label}
@@ -153,13 +151,14 @@ export default function Header() {
 
       {/* ── Mobile drawer ── */}
       {isMobile && menuOpen && (
-        <nav style={{ background: "#0A1628", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        <nav style={{ background: "#0D1320", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
           <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
             <li>
               <Link href="/" onClick={() => setMenuOpen(false)} style={{
-                display: "block", padding: "14px 20px", fontSize: 15, fontWeight: "bold",
-                color: "#E8A020", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.06)",
-                fontFamily: "Arial, sans-serif",
+                display: "block", padding: "15px 20px", fontSize: 15, fontWeight: 700,
+                color: "#E8981D", textDecoration: "none",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+                fontFamily: "system-ui, Arial, sans-serif",
               }}>
                 Home
               </Link>
@@ -167,9 +166,10 @@ export default function Header() {
             {categories.map(cat => (
               <li key={cat.value}>
                 <Link href={`/category/${cat.value}`} onClick={() => setMenuOpen(false)} style={{
-                  display: "block", padding: "14px 20px", fontSize: 15, color: "#94ADCE",
+                  display: "block", padding: "15px 20px", fontSize: 15, color: "#9EB3C8",
                   textDecoration: "none", textTransform: "capitalize",
-                  borderBottom: "1px solid rgba(255,255,255,0.06)", fontFamily: "Arial, sans-serif",
+                  borderBottom: "1px solid rgba(255,255,255,0.06)",
+                  fontFamily: "system-ui, Arial, sans-serif",
                 }}>
                   {cat.label}
                 </Link>

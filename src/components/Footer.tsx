@@ -4,35 +4,37 @@ import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
-    <footer className="mt-16" style={{ background: "#0A1628" }}>
-      {/* Gold top border */}
-      <div style={{ height: 3, background: "linear-gradient(90deg, #E8A020, #14A8AE, #E8A020)" }} />
+    <footer style={{ background: "#1E2A3A", fontFamily: "system-ui, -apple-system, Arial, sans-serif" }}>
+      <div style={{ height: 3, background: "linear-gradient(90deg, #C8102E, #E8981D, #C8102E)" }} />
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "48px 24px 36px" }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: "40px 32px",
+        }}>
 
           {/* Brand */}
-          <div className="md:col-span-1">
-            <Link href="/" className="inline-block mb-4">
+          <div style={{ gridColumn: "span 1" }}>
+            <Link href="/" style={{ display: "inline-block", marginBottom: 16, textDecoration: "none" }}>
               <Logo size="sm" variant="full" />
             </Link>
-            <p className="text-blue-300 text-sm leading-relaxed mt-4" style={{ fontFamily: "Arial, sans-serif" }}>
+            <p style={{ color: "#94A3B8", fontSize: 13, lineHeight: 1.75, margin: "12px 0 20px" }}>
               Nepal's independent AI-powered news source. Real stories, no spin — just the NepaliWave angle.
             </p>
-            <div className="flex gap-3 mt-5">
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               {[
                 { label: "Facebook", icon: "f" },
                 { label: "Twitter", icon: "𝕏" },
                 { label: "Instagram", icon: "◎" },
                 { label: "YouTube", icon: "▶" },
               ].map(({ label, icon }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all hover:scale-110"
-                  style={{ background: "#1A3A6E", color: "#E8A020", fontFamily: "Arial, sans-serif" }}
-                >
+                <a key={label} href="#" aria-label={label} style={{
+                  width: 36, height: 36, borderRadius: "50%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "rgba(255,255,255,0.07)", color: "#CBD5E1",
+                  textDecoration: "none", fontSize: 13, border: "1px solid rgba(255,255,255,0.1)",
+                }}>
                   {icon}
                 </a>
               ))}
@@ -41,13 +43,19 @@ export default function Footer() {
 
           {/* Sections */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#E8A020", fontFamily: "Arial, sans-serif" }}>
+            <h3 style={{
+              fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+              letterSpacing: "0.14em", color: "#E8981D", marginBottom: 20,
+            }}>
               Sections
             </h3>
-            <ul className="space-y-2" style={{ fontFamily: "Arial, sans-serif" }}>
-              {categories.map((cat) => (
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+              {categories.map(cat => (
                 <li key={cat.value}>
-                  <Link href={`/category/${cat.value}`} className="text-blue-300 hover:text-[#E8A020] text-sm transition-colors capitalize">
+                  <Link href={`/category/${cat.value}`} style={{
+                    color: "#CBD5E1", fontSize: 14, textDecoration: "none",
+                    textTransform: "capitalize",
+                  }}>
                     {cat.label}
                   </Link>
                 </li>
@@ -57,13 +65,18 @@ export default function Footer() {
 
           {/* About */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#E8A020", fontFamily: "Arial, sans-serif" }}>
-              About
+            <h3 style={{
+              fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+              letterSpacing: "0.14em", color: "#E8981D", marginBottom: 20,
+            }}>
+              Company
             </h3>
-            <ul className="space-y-2" style={{ fontFamily: "Arial, sans-serif" }}>
-              {["About NepaliWave", "How We Work", "AI & Automation", "Editorial Standards", "Contact Us", "Advertise"].map((item) => (
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+              {["About NepaliWave", "How We Work", "AI & Automation", "Editorial Standards", "Contact Us", "Advertise"].map(item => (
                 <li key={item}>
-                  <a href="#" className="text-blue-300 hover:text-[#E8A020] text-sm transition-colors">{item}</a>
+                  <a href="#" style={{ color: "#CBD5E1", fontSize: 14, textDecoration: "none" }}>
+                    {item}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -71,40 +84,53 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: "#E8A020", fontFamily: "Arial, sans-serif" }}>
+            <h3 style={{
+              fontSize: 10, fontWeight: 700, textTransform: "uppercase",
+              letterSpacing: "0.14em", color: "#E8981D", marginBottom: 20,
+            }}>
               Stay Updated
             </h3>
-            <p className="text-blue-300 text-sm mb-4" style={{ fontFamily: "Arial, sans-serif" }}>
-              Get the NepaliWave daily digest in your inbox.
+            <p style={{ color: "#94A3B8", fontSize: 13, lineHeight: 1.65, marginBottom: 16 }}>
+              Get Nepal's top stories in your inbox every morning.
             </p>
-            <form className="flex flex-col gap-2">
+            <form style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <input
                 type="email"
                 placeholder="your@email.com"
-                className="text-white text-sm px-3 py-2 rounded border focus:outline-none placeholder-blue-600"
-                style={{ background: "#1A3A6E", borderColor: "#2D5A9E", fontFamily: "Arial, sans-serif" }}
+                style={{
+                  background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.14)",
+                  borderRadius: 8, padding: "11px 14px", color: "#F1F5F9", fontSize: 14,
+                  outline: "none", fontFamily: "inherit",
+                }}
               />
-              <button
-                type="submit"
-                className="text-white text-sm font-bold py-2 px-4 rounded transition-all hover:opacity-90"
-                style={{ background: "linear-gradient(135deg, #E8A020, #F5C152)", color: "#0F2044", fontFamily: "Arial, sans-serif" }}
-              >
+              <button type="submit" style={{
+                background: "#C8102E", color: "white", fontWeight: 700,
+                padding: "11px 16px", borderRadius: 8, border: "none",
+                cursor: "pointer", fontSize: 14, fontFamily: "inherit",
+              }}>
                 Subscribe Free
               </button>
             </form>
           </div>
+
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div style={{ borderTop: "1px solid #1A3A6E" }}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-2" style={{ fontFamily: "Arial, sans-serif" }}>
-          <p className="text-blue-600 text-xs">
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+        <div style={{
+          maxWidth: 1280, margin: "0 auto", padding: "16px 24px",
+          display: "flex", flexWrap: "wrap", alignItems: "center",
+          justifyContent: "space-between", gap: 10,
+        }}>
+          <p style={{ color: "#4B5563", fontSize: 12, margin: 0 }}>
             © 2026 NepaliWave. All rights reserved. Powered by AI.
           </p>
-          <div className="flex gap-4 text-xs text-blue-600">
-            {["Privacy Policy", "Terms of Use", "Cookie Policy"].map((item) => (
-              <a key={item} href="#" className="hover:text-blue-300 transition-colors">{item}</a>
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+            {["Privacy Policy", "Terms of Use", "Cookie Policy"].map(item => (
+              <a key={item} href="#" style={{ color: "#4B5563", fontSize: 12, textDecoration: "none" }}>
+                {item}
+              </a>
             ))}
           </div>
         </div>
