@@ -12,10 +12,10 @@ export default function Header() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
   useEffect(() => {
@@ -26,93 +26,108 @@ export default function Header() {
 
   return (
     <header style={{
-      position: "sticky", top: 0, zIndex: 50, width: "100%",
+      position: "sticky", top: 0, zIndex: 100,
+      width: "100%", maxWidth: "100vw", overflow: "hidden",
       background: "#111827",
-      borderBottom: scrolled ? "2px solid #C8102E" : "2px solid #E8981D",
-      boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.5)" : "0 2px 8px rgba(0,0,0,0.2)",
-      transition: "box-shadow 0.3s, border-color 0.3s",
+      borderBottom: "2px solid #E8981D",
+      boxShadow: scrolled ? "0 4px 20px rgba(0,0,0,0.5)" : "0 2px 8px rgba(0,0,0,0.2)",
+      transition: "box-shadow 0.3s",
     }}>
 
-      {/* ── Brand bar ── */}
+      {/* ── Main bar ── */}
       <div style={{
-        maxWidth: 1280, margin: "0 auto",
-        padding: `${scrolled ? 6 : 12}px 16px`,
+        padding: isMobile ? "8px 12px" : (scrolled ? "6px 20px" : "12px 20px"),
         transition: "padding 0.3s",
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        gap: 12,
+        gap: 8, maxWidth: 1280, margin: "0 auto",
+        boxSizing: "border-box", width: "100%",
       }}>
-        <Link href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
-          <Logo size={isMobile || scrolled ? "sm" : "md"} variant="full" />
+
+        {/* Logo */}
+        <Link href="/" style={{ textDecoration: "none", flexShrink: 0, minWidth: 0 }}>
+          <Logo size={isMobile ? "sm" : (scrolled ? "sm" : "md")} variant="full" />
         </Link>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {/* Right controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+
+          {/* LIVE badge — desktop only */}
           {!isMobile && (
             <div style={{
               display: "flex", alignItems: "center", gap: 5,
               background: "#C8102E", padding: "4px 10px", borderRadius: 4,
               fontSize: 11, fontWeight: 800, color: "white",
-              fontFamily: "system-ui, Arial, sans-serif", userSelect: "none",
-              letterSpacing: "0.06em",
+              fontFamily: "system-ui, Arial, sans-serif",
+              letterSpacing: "0.06em", whiteSpace: "nowrap",
             }}>
               <span className="ticker-dot" style={{ width: 6, height: 6 }} />
               LIVE
             </div>
           )}
 
-          {/* Search */}
+          {/* Search button */}
           <div style={{ position: "relative" }}>
             <button
               onClick={() => { setSearchOpen(v => !v); setMenuOpen(false); }}
               aria-label="Search"
               style={{
-                width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center",
-                background: searchOpen ? "rgba(255,255,255,0.15)" : "transparent",
-                border: "none", borderRadius: "50%", cursor: "pointer", color: "white",
+                width: 38, height: 38,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: searchOpen ? "#C8102E" : "rgba(255,255,255,0.1)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                borderRadius: 8, cursor: "pointer", color: "white",
+                flexShrink: 0,
               }}
             >
-              <svg width={17} height={17} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg width={16} height={16} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
+
             {searchOpen && (
               <div style={{
                 ...(isMobile
-                  ? { position: "fixed", top: 60, left: 12, right: 12, width: "auto" }
-                  : { position: "absolute", right: 0, top: 44, width: 290 }),
-                background: "white", borderRadius: 12, zIndex: 200,
-                boxShadow: "0 16px 48px rgba(0,0,0,0.22)", overflow: "hidden",
+                  ? { position: "fixed", top: 58, left: 8, right: 8, width: "auto" }
+                  : { position: "absolute", right: 0, top: 46, width: 300 }),
+                background: "white", borderRadius: 12, zIndex: 300,
+                boxShadow: "0 16px 48px rgba(0,0,0,0.3)", overflow: "hidden",
               }}>
                 <input
                   autoFocus type="text" id="site-search" name="q"
                   placeholder="Search NepaliWave…"
                   style={{
-                    width: "100%", padding: "14px 16px", fontSize: 14,
+                    width: "100%", padding: "14px 16px", fontSize: 15,
                     color: "#111", outline: "none", border: "none",
-                    fontFamily: "system-ui, Arial, sans-serif", boxSizing: "border-box",
+                    fontFamily: "system-ui, Arial, sans-serif",
+                    boxSizing: "border-box",
                   }}
                 />
-                <div style={{ padding: "8px 16px", background: "#f7f7f7", borderTop: "1px solid #eee" }}>
+                <div style={{ padding: "8px 16px", background: "#f5f5f5", borderTop: "1px solid #eee" }}>
                   <p style={{ fontSize: 11, color: "#aaa", margin: 0 }}>Press Enter to search</p>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Hamburger — mobile only, clearly visible */}
           {isMobile && (
             <button
               onClick={() => { setMenuOpen(v => !v); setSearchOpen(false); }}
-              aria-label="Menu"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
               style={{
-                width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center",
-                background: menuOpen ? "rgba(255,255,255,0.15)" : "transparent",
-                border: "none", borderRadius: "50%", cursor: "pointer", color: "white",
+                width: 38, height: 38,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: menuOpen ? "#C8102E" : "rgba(232,152,29,0.25)",
+                border: "1px solid rgba(232,152,29,0.6)",
+                borderRadius: 8, cursor: "pointer", color: "white",
+                flexShrink: 0,
               }}
             >
-              <svg width={20} height={20} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width={18} height={18} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {menuOpen
-                  ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
                 }
               </svg>
             </button>
@@ -122,25 +137,80 @@ export default function Header() {
 
       {/* ── Desktop category nav ── */}
       {!isMobile && (
-        <nav style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 16px", overflowX: "auto" }}>
-            <ul style={{ display: "flex", listStyle: "none", margin: 0, padding: 0 }}>
-              <li>
-                <Link href="/" style={{
-                  display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 700,
-                  color: "#E8981D", textDecoration: "none", borderBottom: "2px solid #E8981D",
-                  fontFamily: "system-ui, Arial, sans-serif", whiteSpace: "nowrap",
+        <nav style={{ borderTop: "1px solid rgba(255,255,255,0.07)", overflowX: "auto" }}>
+          <ul style={{
+            display: "flex", listStyle: "none", margin: 0,
+            padding: "0 20px", maxWidth: 1280, boxSizing: "border-box",
+          }}>
+            <li>
+              <Link href="/" style={{
+                display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 700,
+                color: "#E8981D", textDecoration: "none", borderBottom: "2px solid #E8981D",
+                fontFamily: "system-ui, Arial, sans-serif", whiteSpace: "nowrap",
+              }}>
+                Home
+              </Link>
+            </li>
+            {categories.map(cat => (
+              <li key={cat.value}>
+                <Link href={`/category/${cat.value}`} className="nav-cat-link" style={{
+                  display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 500,
+                  color: "#9EB3C8", textDecoration: "none",
+                  fontFamily: "system-ui, Arial, sans-serif",
+                  whiteSpace: "nowrap", textTransform: "capitalize",
                 }}>
-                  Home
+                  {cat.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
+      {/* ── Mobile dropdown — absolute overlay ── */}
+      {isMobile && menuOpen && (
+        <nav style={{
+          position: "absolute", top: "100%", left: 0, right: 0,
+          background: "#0D1320",
+          boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
+          zIndex: 200,
+        }}>
+          <style>{`
+            @keyframes slideDown {
+              from { opacity: 0; transform: translateY(-6px); }
+              to   { opacity: 1; transform: translateY(0); }
+            }
+          `}</style>
+          <div style={{ animation: "slideDown 0.18s ease-out" }}>
+            {/* Close hint */}
+            <div style={{
+              padding: "10px 16px 6px",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}>
+              <span style={{ fontSize: 10, color: "#6B7280", fontFamily: "system-ui, Arial, sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                Navigate
+              </span>
+            </div>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+              <li>
+                <Link href="/" onClick={() => setMenuOpen(false)} style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "14px 16px", fontSize: 15, fontWeight: 700,
+                  color: "#E8981D", textDecoration: "none",
+                  borderBottom: "1px solid rgba(255,255,255,0.05)",
+                  fontFamily: "system-ui, Arial, sans-serif",
+                }}>
+                  🏠 Home
                 </Link>
               </li>
               {categories.map(cat => (
                 <li key={cat.value}>
-                  <Link href={`/category/${cat.value}`} className="nav-cat-link" style={{
-                    display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 500,
-                    color: "#9EB3C8", textDecoration: "none",
+                  <Link href={`/category/${cat.value}`} onClick={() => setMenuOpen(false)} style={{
+                    display: "block", padding: "13px 16px 13px 26px",
+                    fontSize: 14, color: "#CBD5E1", textDecoration: "none",
+                    textTransform: "capitalize",
+                    borderBottom: "1px solid rgba(255,255,255,0.05)",
                     fontFamily: "system-ui, Arial, sans-serif",
-                    whiteSpace: "nowrap", textTransform: "capitalize",
                   }}>
                     {cat.label}
                   </Link>
@@ -148,47 +218,6 @@ export default function Header() {
               ))}
             </ul>
           </div>
-        </nav>
-      )}
-
-      {/* ── Mobile drawer — absolute overlay, does NOT push content down ── */}
-      {isMobile && menuOpen && (
-        <nav style={{
-          position: "absolute", top: "100%", left: 0, right: 0,
-          background: "#0D1320", zIndex: 200,
-          boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
-          animation: "slideDown 0.2s ease-out",
-        }}>
-          <style>{`
-            @keyframes slideDown {
-              from { opacity: 0; transform: translateY(-8px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-          `}</style>
-          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            <li>
-              <Link href="/" onClick={() => setMenuOpen(false)} style={{
-                display: "block", padding: "15px 20px", fontSize: 15, fontWeight: 700,
-                color: "#E8981D", textDecoration: "none",
-                borderBottom: "1px solid rgba(255,255,255,0.06)",
-                fontFamily: "system-ui, Arial, sans-serif",
-              }}>
-                Home
-              </Link>
-            </li>
-            {categories.map(cat => (
-              <li key={cat.value}>
-                <Link href={`/category/${cat.value}`} onClick={() => setMenuOpen(false)} style={{
-                  display: "block", padding: "15px 20px", fontSize: 15, color: "#CBD5E1",
-                  textDecoration: "none", textTransform: "capitalize",
-                  borderBottom: "1px solid rgba(255,255,255,0.06)",
-                  fontFamily: "system-ui, Arial, sans-serif",
-                }}>
-                  {cat.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
         </nav>
       )}
     </header>

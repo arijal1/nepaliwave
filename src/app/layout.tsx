@@ -40,7 +40,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#F4F5F7" }}>
+      <body style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#F4F5F7", overflowX: "hidden", maxWidth: "100vw" }}>
         <Header />
         <BreakingTicker />
         <main style={{ flex: 1 }}>{children}</main>
