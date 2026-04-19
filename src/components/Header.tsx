@@ -1,17 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { categories } from "@/data/mockNews";
 import Logo from "@/components/Logo";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [today, setToday] = useState("");
 
-  const today = new Date().toLocaleDateString("en-GB", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
-  });
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString("en-GB", {
+      weekday: "long", day: "numeric", month: "long", year: "numeric",
+    }));
+  }, []);
 
   return (
     <header className="w-full sticky top-0 z-50 shadow-lg">
@@ -83,6 +86,8 @@ export default function Header() {
                 <div className="absolute right-0 top-10 w-72 bg-white rounded-lg shadow-2xl overflow-hidden">
                   <input
                     type="text"
+                    id="site-search"
+                    name="q"
                     placeholder="Search NepaliWave..."
                     autoFocus
                     className="w-full px-4 py-3 text-gray-900 text-sm focus:outline-none"
