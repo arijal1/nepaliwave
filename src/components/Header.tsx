@@ -27,7 +27,7 @@ export default function Header() {
   return (
     <header style={{
       position: "sticky", top: 0, zIndex: 100,
-      width: "100%", maxWidth: "100vw", overflow: "hidden",
+      width: "100%", maxWidth: "100vw",
       background: "#111827",
       borderBottom: "2px solid #E8981D",
       boxShadow: scrolled ? "0 4px 20px rgba(0,0,0,0.5)" : "0 2px 8px rgba(0,0,0,0.2)",
