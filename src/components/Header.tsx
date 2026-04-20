@@ -9,15 +9,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -45,37 +37,48 @@ export default function Header() {
       boxShadow: scrolled ? "0 4px 20px rgba(0,0,0,0.5)" : "0 2px 8px rgba(0,0,0,0.2)",
       transition: "box-shadow 0.3s",
     }}>
+      {/* CSS handles mobile/desktop visibility — no JS isMobile state to avoid hydration mismatch */}
+      <style>{`
+        .nw-hamburger-btn { display: none !important; }
+        .nw-desktop-nav   { display: block !important; }
+        .nw-live-badge    { display: flex  !important; }
+        @media (max-width: 767px) {
+          .nw-hamburger-btn { display: flex  !important; }
+          .nw-live-badge    { display: none  !important; }
+          .nw-desktop-nav   { display: none  !important; }
+        }
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
 
       {/* ── Main bar ── */}
       <div style={{
-        padding: isMobile ? "8px 12px" : (scrolled ? "6px 20px" : "12px 20px"),
+        padding: scrolled ? "6px 20px" : "12px 20px",
         transition: "padding 0.3s",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         gap: 8, maxWidth: 1280, margin: "0 auto",
         boxSizing: "border-box", width: "100%",
       }}>
 
-        {/* Logo */}
         <Link href="/" style={{ textDecoration: "none", flexShrink: 0, minWidth: 0 }}>
-          <Logo size={isMobile ? "sm" : (scrolled ? "sm" : "md")} variant="full" />
+          <Logo size={scrolled ? "sm" : "md"} variant="full" />
         </Link>
 
-        {/* Right controls */}
         <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
 
-          {/* LIVE badge — desktop only */}
-          {!isMobile && (
-            <div style={{
-              display: "flex", alignItems: "center", gap: 5,
-              background: "#C8102E", padding: "4px 10px", borderRadius: 4,
-              fontSize: 11, fontWeight: 800, color: "white",
-              fontFamily: "system-ui, Arial, sans-serif",
-              letterSpacing: "0.06em", whiteSpace: "nowrap",
-            }}>
-              <span className="ticker-dot" style={{ width: 6, height: 6 }} />
-              LIVE
-            </div>
-          )}
+          {/* LIVE badge — hidden on mobile via CSS */}
+          <div className="nw-live-badge" style={{
+            alignItems: "center", gap: 5,
+            background: "#C8102E", padding: "4px 10px", borderRadius: 4,
+            fontSize: 11, fontWeight: 800, color: "white",
+            fontFamily: "system-ui, Arial, sans-serif",
+            letterSpacing: "0.06em", whiteSpace: "nowrap",
+          }}>
+            <span className="ticker-dot" style={{ width: 6, height: 6 }} />
+            LIVE
+          </div>
 
           {/* Search button */}
           <div style={{ position: "relative" }}>
@@ -99,9 +102,8 @@ export default function Header() {
 
             {searchOpen && (
               <div style={{
-                ...(isMobile
-                  ? { position: "fixed", top: 58, left: 8, right: 8, width: "auto" }
-                  : { position: "absolute", right: 0, top: 46, width: 300 }),
+                position: "absolute", right: 0, top: 46,
+                width: "min(300px, 90vw)",
                 background: "white", borderRadius: 12, zIndex: 300,
                 boxShadow: "0 16px 48px rgba(0,0,0,0.3)", overflow: "hidden",
               }}>
@@ -122,79 +124,69 @@ export default function Header() {
             )}
           </div>
 
-          {/* Hamburger — mobile only, clearly visible */}
-          {isMobile && (
-            <button
-              onClick={() => { setMenuOpen(v => !v); setSearchOpen(false); }}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              style={{
-                width: 38, height: 38,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: menuOpen ? "#C8102E" : "rgba(232,152,29,0.25)",
-                border: "1px solid rgba(232,152,29,0.6)",
-                borderRadius: 8, cursor: "pointer", color: "white",
-                flexShrink: 0,
-              }}
-            >
-              <svg width={18} height={18} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {menuOpen
-                  ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                  : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-                }
-              </svg>
-            </button>
-          )}
+          {/* Hamburger — shown on mobile via CSS */}
+          <button
+            className="nw-hamburger-btn"
+            onClick={() => { setMenuOpen(v => !v); setSearchOpen(false); }}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            style={{
+              width: 38, height: 38,
+              alignItems: "center", justifyContent: "center",
+              background: menuOpen ? "#C8102E" : "rgba(232,152,29,0.25)",
+              border: "1px solid rgba(232,152,29,0.6)",
+              borderRadius: 8, cursor: "pointer", color: "white",
+              flexShrink: 0,
+            }}
+          >
+            <svg width={18} height={18} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {menuOpen
+                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+              }
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* ── Desktop category nav ── */}
-      {!isMobile && (
-        <nav style={{ borderTop: "1px solid rgba(255,255,255,0.07)", overflowX: "auto" }}>
-          <ul style={{
-            display: "flex", listStyle: "none", margin: 0,
-            padding: "0 20px", maxWidth: 1280, boxSizing: "border-box",
-          }}>
-            <li>
-              <Link href="/" style={{
-                display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 700,
-                color: "#E8981D", textDecoration: "none", borderBottom: "2px solid #E8981D",
-                fontFamily: "system-ui, Arial, sans-serif", whiteSpace: "nowrap",
+      {/* ── Desktop category nav — hidden on mobile via CSS ── */}
+      <nav className="nw-desktop-nav" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", overflowX: "auto" }}>
+        <ul style={{
+          display: "flex", listStyle: "none", margin: 0,
+          padding: "0 20px", maxWidth: 1280, boxSizing: "border-box",
+        }}>
+          <li>
+            <Link href="/" style={{
+              display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 700,
+              color: "#E8981D", textDecoration: "none", borderBottom: "2px solid #E8981D",
+              fontFamily: "system-ui, Arial, sans-serif", whiteSpace: "nowrap",
+            }}>
+              Home
+            </Link>
+          </li>
+          {categories.map(cat => (
+            <li key={cat.value}>
+              <Link href={`/category/${cat.value}`} className="nav-cat-link" style={{
+                display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 500,
+                color: "#9EB3C8", textDecoration: "none",
+                fontFamily: "system-ui, Arial, sans-serif",
+                whiteSpace: "nowrap", textTransform: "capitalize",
               }}>
-                Home
+                {cat.label}
               </Link>
             </li>
-            {categories.map(cat => (
-              <li key={cat.value}>
-                <Link href={`/category/${cat.value}`} className="nav-cat-link" style={{
-                  display: "block", padding: "8px 14px", fontSize: 12, fontWeight: 500,
-                  color: "#9EB3C8", textDecoration: "none",
-                  fontFamily: "system-ui, Arial, sans-serif",
-                  whiteSpace: "nowrap", textTransform: "capitalize",
-                }}>
-                  {cat.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+          ))}
+        </ul>
+      </nav>
 
-      {/* ── Mobile dropdown — absolute overlay ── */}
-      {isMobile && menuOpen && (
+      {/* ── Mobile dropdown ── */}
+      {menuOpen && (
         <nav style={{
           position: "absolute", top: "100%", left: 0, right: 0,
           background: "#0D1320",
           boxShadow: "0 12px 40px rgba(0,0,0,0.6)",
           zIndex: 200,
         }}>
-          <style>{`
-            @keyframes slideDown {
-              from { opacity: 0; transform: translateY(-6px); }
-              to   { opacity: 1; transform: translateY(0); }
-            }
-          `}</style>
           <div style={{ animation: "slideDown 0.18s ease-out" }}>
-            {/* Close hint */}
             <div style={{
               padding: "10px 16px 6px",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
@@ -212,18 +204,22 @@ export default function Header() {
                   borderBottom: "1px solid rgba(255,255,255,0.05)",
                   fontFamily: "system-ui, Arial, sans-serif",
                 }}>
-                  🏠 Home
+                  Home
                 </Link>
               </li>
               {categories.map(cat => (
                 <li key={cat.value}>
-                  <Link href={`/category/${cat.value}`} onClick={() => setMenuOpen(false)} style={{
-                    display: "block", padding: "13px 16px 13px 26px",
-                    fontSize: 14, color: "#CBD5E1", textDecoration: "none",
-                    textTransform: "capitalize",
-                    borderBottom: "1px solid rgba(255,255,255,0.05)",
-                    fontFamily: "system-ui, Arial, sans-serif",
-                  }}>
+                  <Link
+                    href={`/category/${cat.value}`}
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      display: "block", padding: "13px 16px 13px 26px",
+                      fontSize: 14, color: "#CBD5E1", textDecoration: "none",
+                      textTransform: "capitalize",
+                      borderBottom: "1px solid rgba(255,255,255,0.05)",
+                      fontFamily: "system-ui, Arial, sans-serif",
+                    }}
+                  >
                     {cat.label}
                   </Link>
                 </li>
