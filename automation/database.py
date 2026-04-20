@@ -129,6 +129,13 @@ def get_recent_articles(limit: int = 20, category: str | None = None) -> list[di
     return result
 
 
+def set_featured_article(article_id: int):
+    """Mark one article as featured, clear featured flag on all others."""
+    with get_conn() as conn:
+        conn.execute("UPDATE articles SET featured = 0")
+        conn.execute("UPDATE articles SET featured = 1 WHERE id = ?", (article_id,))
+
+
 def log_run(stats: dict):
     with get_conn() as conn:
         conn.execute("""

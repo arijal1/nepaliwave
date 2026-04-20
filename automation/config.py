@@ -29,6 +29,10 @@ X_BEARER_TOKEN       = os.getenv("X_BEARER_TOKEN", "")
 # ── Database ──────────────────────────────────────
 DB_PATH = Path(__file__).parent.parent / "nepaliwave.db"
 
+# ── Unsplash (optional — for article images) ──────
+# Get free key from: unsplash.com/developers → New Application
+UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY", "")
+
 # ── Site ─────────────────────────────────────────
 SITE_URL = os.getenv("SITE_URL", "https://nepaliwave.anuprijal.com.np")
 

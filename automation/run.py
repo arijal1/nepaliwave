@@ -13,7 +13,7 @@ import time
 import argparse
 from datetime import datetime
 
-from database import init_db, save_article, get_unposted_articles, mark_posted, log_run
+from database import init_db, save_article, get_unposted_articles, mark_posted, log_run, set_featured_article
 from scraper import fetch_new_topics
 from ai_rewriter import write_article
 from social import post_to_facebook, post_to_x
@@ -52,7 +52,7 @@ def run_once() -> dict:
         print(f"\n[RUN] Article {i}/{len(topics)}: {topic['title'][:60]}...")
         article = write_article(topic)
         if not article:
-            errors.append(f"AI failed: {raw['url']}")
+            errors.append(f"AI failed: {topic['url']}")
             continue
 
         article_id = save_article(article)
@@ -67,7 +67,12 @@ def run_once() -> dict:
         if i < len(topics):
             time.sleep(2)
 
-    # ── 3. Post to social media ───────────────────────────
+    # ── 3. Mark one article as featured on homepage ──────
+    if saved_ids:
+        set_featured_article(saved_ids[0])
+        print(f"[RUN] Featured article id={saved_ids[0]}")
+
+    # ── 4. Post to social media ───────────────────────────
     print(f"\n[RUN] Posting to social media...")
     unposted = get_unposted_articles("facebook", limit=5)
 

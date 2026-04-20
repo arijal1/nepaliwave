@@ -6,8 +6,9 @@ No source text is copied or paraphrased — entirely original journalism.
 """
 import json
 import re
+import requests
 import anthropic
-from config import ANTHROPIC_API_KEY
+from config import ANTHROPIC_API_KEY, UNSPLASH_ACCESS_KEY
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -26,7 +27,8 @@ Your writing style:
 - Clear, accessible English — no jargon, no fluff
 - Short punchy paragraphs. Active voice.
 - Draw on your broad knowledge of Nepal — politics, geography, economy, culture, history
-- Every article must be entirely your own original writing"""
+- Every article must be entirely your own original writing
+- If the news topic headline is in Nepali/Devanagari, translate it and write the article in English"""
 
 USER_PROMPT_TEMPLATE = """News topic to cover: {title}
 
@@ -53,6 +55,17 @@ Return ONLY valid JSON, no markdown, no extra text:
   "breaking": false
 }}"""
 
+# Unsplash search terms per category (used when no specific tag works)
+CATEGORY_UNSPLASH_QUERIES = {
+    "politics":      "nepal parliament government",
+    "business":      "nepal economy business",
+    "sports":        "nepal sports cricket",
+    "technology":    "technology digital nepal",
+    "entertainment": "nepal culture festival",
+    "world":         "himalaya nepal landscape",
+    "health":        "healthcare medical nepal",
+}
+
 
 def slugify(title: str) -> str:
     slug = title.lower()
@@ -60,6 +73,33 @@ def slugify(title: str) -> str:
     slug = re.sub(r"[\s_]+", "-", slug)
     slug = re.sub(r"-+", "-", slug).strip("-")
     return slug[:80]
+
+
+def fetch_unsplash_image(category: str, tags: list[str]) -> tuple[str, str]:
+    """Return (image_url, alt_text) from Unsplash, or ('', '') if unavailable."""
+    if not UNSPLASH_ACCESS_KEY:
+        return "", ""
+
+    # Build search query from tags first, fall back to category defaults
+    tag_query = " ".join(tags[:2]) if tags else ""
+    query = f"{tag_query} nepal" if tag_query else CATEGORY_UNSPLASH_QUERIES.get(category, "nepal")
+
+    try:
+        resp = requests.get(
+            "https://api.unsplash.com/photos/random",
+            params={"query": query, "orientation": "landscape", "content_filter": "high"},
+            headers={"Authorization": f"Client-ID {UNSPLASH_ACCESS_KEY}"},
+            timeout=8,
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            url = data["urls"]["regular"]
+            alt = data.get("alt_description") or data.get("description") or query
+            credit = data.get("user", {}).get("name", "Unsplash")
+            return url, f"{alt.capitalize()} (Photo: {credit} / Unsplash)"
+    except Exception as e:
+        print(f"  [IMG] Unsplash error: {e}")
+    return "", ""
 
 
 def write_article(topic: dict) -> dict | None:
@@ -75,10 +115,15 @@ def write_article(topic: dict) -> dict | None:
     )
 
     try:
+        # System prompt uses cache_control so it's only billed once per cache TTL (~5 min)
         message = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=1800,
-            system=SYSTEM_PROMPT,
+            system=[{
+                "type": "text",
+                "text": SYSTEM_PROMPT,
+                "cache_control": {"type": "ephemeral"},
+            }],
             messages=[{"role": "user", "content": prompt}],
         )
         text = message.content[0].text.strip()
@@ -90,6 +135,9 @@ def write_article(topic: dict) -> dict | None:
         if data.get("category") not in CATEGORY_LIST:
             data["category"] = "world"
 
+        tags = data.get("tags", [])
+        image_url, image_alt = fetch_unsplash_image(data["category"], tags)
+
         return {
             "slug":         slugify(data["title"]),
             "title":        data["title"],
@@ -98,11 +146,11 @@ def write_article(topic: dict) -> dict | None:
             "category":     data["category"],
             "author":       "NepaliWave",
             "published_at": topic["published_at"],
-            "image_url":    "",
-            "image_alt":    data["title"],
-            "tags":         data.get("tags", []),
+            "image_url":    image_url,
+            "image_alt":    image_alt or data["title"],
+            "tags":         tags,
             "source_url":   topic["url"],
-            "source_name":  None,      # intentionally not stored on article
+            "source_name":  None,
             "featured":     0,
             "breaking":     1 if data.get("breaking") else 0,
         }
